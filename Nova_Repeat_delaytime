@@ -1,0 +1,50 @@
+%% To correct delay time between cycles when using Repeat function in Nova
+%% Computes Average Delay Time Based on Initial and Final Timestamps
+%% Made by Jongsu Noh
+
+i = 21.1404; % initial time / s
+i0 = 137.617; % final time / s
+t1 = 1; % time duration at first potential / s
+t2 = 1; % time duration at second potential / s
+p1 = 1.5; % value of first potential / Vrhe
+p2 = 0.2; % value of second potential / Vrhe
+Nt = 50; % number of cycles
+dt = 0.1; % time interval (data) / s
+Npc = (t1+t2)./dt;
+delay_avg = (i0 - i - Nt * (Npc - 1) * dt) / (Nt - 1);
+
+
+T = i;
+P = [];
+for i3=1:Nt
+    if i3==1 
+
+    for i2=1:Npc-1 
+        T = [T i+i2.*0.1];
+    end
+
+    else
+    i = T(length(T))+delay_avg; 
+    T = [T i];
+    for i2=2:Npc
+        T = [T i+(i2-1).*0.1];
+    end
+    end
+end
+
+
+T = transpose(T);
+
+Np1 = t1./0.1;
+
+for i3=1:Nt
+    for i2 = 1:Np1
+        P = [P p1];
+    end
+    for i2 = Np1+1:Npc
+        P = [P p2];
+    end
+end
+
+TP = [T, transpose(P)];
+
